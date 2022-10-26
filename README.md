@@ -22,6 +22,10 @@ This is how long you have to wait between rockets
 
 Time is relative in space. Speed up time if you can't wait.
 
+`NUMBER_OF_COUNTERS`
+
+Still too slow? Add a few more rockets in the daily schedule
+
 ### Technologies used
 
 Bundler: Vite
