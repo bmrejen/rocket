@@ -3,7 +3,7 @@ import { getMinutesAndSeconds } from "../helpers/time";
 
 export function Counter({ num }: { num: number }) {
   const INTIIAL_VALUE_SECONDS = 20 + num * 10;
-  const TICK_IN_MILLISECONDS = 100;
+  const TICK_IN_MILLISECONDS = 1000;
   const [secondsCount, setCount] = useState(INTIIAL_VALUE_SECONDS);
   let interval: number;
 
