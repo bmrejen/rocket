@@ -3,11 +3,11 @@ import rocket from "./assets/rocket.png";
 import hero from "./assets/hero.png";
 import { Counter } from "./components/Counter";
 
+const NUMBER_OF_COUNTERS = 3;
+
 function App() {
-  const NUMBER_OF_COUNTERS = 3;
-  const counters = Array.from({ length: NUMBER_OF_COUNTERS }, (_, i) => i + 1).map((num) => (
-    <Counter key={num} num={num} />
-  ));
+  const countersArray = Array.from({ length: NUMBER_OF_COUNTERS }, (_, i) => i + 1);
+  const counters = countersArray.map((num) => <Counter num={num} key={num} />);
   return (
     <div className="wrapper">
       <div className="logo">
@@ -36,4 +36,3 @@ function App() {
 }
 
 export default App;
-

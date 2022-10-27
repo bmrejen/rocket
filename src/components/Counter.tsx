@@ -1,38 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getMinutesAndSeconds } from "../helpers/time";
 
-export function Counter({ num }: { num: number }) {
-  const INITIAL_VALUE_SECONDS = 20 + num * 10;
-  const TICK_IN_MILLISECONDS = 1000;
-  const [secondsCount, setCount] = useState(INITIAL_VALUE_SECONDS);
-  let interval: number;
+const INITIAL_VALUE_SECONDS = 20;
+const TICK_IN_MILLISECONDS = 1000;
+const SECONDS_BETWEEN_TIMERS = 10;
 
+export function Counter({ num }: { num: number }) {
+  const initialCountdown = INITIAL_VALUE_SECONDS + num * SECONDS_BETWEEN_TIMERS;
+  const [counter, setSeconds] = useState(initialCountdown);
+
+  const interval = useRef(0);
+  const cacheCounterName = "counter" + num;
+  const startCountdown = () => {
+    interval.current = setInterval(() => setSeconds((second) => second - 1), TICK_IN_MILLISECONDS);
+  };
   useEffect(() => {
-    const previousSeconds = Number(localStorage.getItem("seconds" + num));
-    if (previousSeconds != 0) {
-      setCount(previousSeconds);
+    const remainingSeconds = Number(localStorage.getItem(cacheCounterName));
+    if (remainingSeconds != 0) {
+      setSeconds(Number(remainingSeconds));
     }
-    interval = setInterval(() => {
-      setCount((counter) => {
-        if (counter === 0) return 0;
-        return counter - 1;
-      });
-    }, TICK_IN_MILLISECONDS);
-    return () => clearInterval(interval);
+    startCountdown();
+    return () => {
+      clearInterval(interval.current);
+    };
   }, []);
 
   useEffect(() => {
-    if (secondsCount === 0) {
-      alert("You missed the last rocket to mars!");
-      clearInterval(interval);
+    if (counter <= 0) {
+      clearInterval(interval.current);
+      setTimeout(() => alert("You missed the last rocket to Mars!"), 100);
     }
-    localStorage.setItem("seconds" + num, secondsCount.toString());
-    return () => localStorage.removeItem("seconds" + num);
-  }, [secondsCount]);
+    localStorage.setItem(cacheCounterName, String(counter));
+    return () => {
+      localStorage.removeItem(cacheCounterName);
+    };
+  }, [counter]);
 
-  const handleClick = () => setCount(INITIAL_VALUE_SECONDS);
-
-  const { seconds, minutes } = getMinutesAndSeconds(secondsCount);
+  const { minutes, seconds } = getMinutesAndSeconds(counter);
+  const handleClick = () => {
+    setSeconds(initialCountdown);
+    clearInterval(interval.current);
+    startCountdown();
+  };
 
   return (
     <div className="counter">
